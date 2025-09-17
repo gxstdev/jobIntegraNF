@@ -6,8 +6,8 @@ import jakarta.persistence.EntityTransaction;
 import java.util.List;
 
 public class GenericDAO<T> {
-    private final Class<T> clazz;
-    private final EntityManager em;
+    protected final Class<T> clazz;
+    protected final EntityManager em;
 
     public GenericDAO(Class<T> clazz, EntityManager em) {
         this.clazz = clazz;
