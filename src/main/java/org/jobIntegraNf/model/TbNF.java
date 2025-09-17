@@ -16,10 +16,10 @@ public class TbNF {
     @Column(name = "CD_STATUS", nullable = false)
     private Long codigoStatus;
 
-    @Column(name = "DT_EMISSAO", columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    @Column(name = "DT_EMISSAO")
     private OffsetDateTime dataEmissao;
 
-    @Column(name = "DT_PROCESSAMENTO", columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    @Column(name = "DT_PROCESSAMENTO")
     private OffsetDateTime dataProcessamento;
 
     public TbNF() {
