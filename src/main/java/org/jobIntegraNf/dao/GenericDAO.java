@@ -58,4 +58,8 @@ public class GenericDAO<T> {
             e.printStackTrace();
         }
     }
+
+    public EntityManager getEm() {
+        return em;
+    }
 }

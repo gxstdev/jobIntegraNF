@@ -25,8 +25,7 @@ public class TbNF {
     public TbNF() {
     }
 
-    public TbNF(Long codigoNF, Long codigoStatus, OffsetDateTime dataEmissao, OffsetDateTime dataProcessamento) {
-        this.codigoNF = codigoNF;
+    public TbNF(Long codigoStatus, OffsetDateTime dataEmissao, OffsetDateTime dataProcessamento) {
         this.codigoStatus = codigoStatus;
         this.dataEmissao = dataEmissao;
         this.dataProcessamento = dataProcessamento;
