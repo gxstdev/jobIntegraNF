@@ -1,16 +1,22 @@
 package org.jobIntegraNf.service.impl;
 
 import org.jobIntegraNf.dao.NFDAO;
+import org.jobIntegraNf.dao.ParametroSistemaDAO;
+import org.jobIntegraNf.enums.Parametros;
 import org.jobIntegraNf.enums.StatusNF;
 import org.jobIntegraNf.model.TbNF;
+import org.jobIntegraNf.model.TbParametroSistema;
 import org.jobIntegraNf.service.NFService;
+import org.jobIntegraNf.util.FileUtils;
 import org.jobIntegraNf.util.JPAUtil;
 
 import java.util.List;
 
 public class NFServiceImpl implements NFService {
 
-    NFDAO nfDAO = new NFDAO(TbNF.class, JPAUtil.getEntityManager());
+    private final NFDAO nfDAO = new NFDAO(TbNF.class, JPAUtil.getEntityManager());
+    private final ParametroSistemaDAO parametroSistemaDAO = new ParametroSistemaDAO(TbParametroSistema.class,
+            JPAUtil.getEntityManager());
 
     @Override
     public void salvarNFs(List<TbNF> nfs) {
@@ -19,6 +25,7 @@ public class NFServiceImpl implements NFService {
         for (TbNF nf : nfs){
             nfDAO.salvar(nf);
             nfDAO.getEm().clear();
+            FileUtils.gerarNFTxt(nf, getDirPendentes());
         }
     }
 
@@ -30,5 +37,13 @@ public class NFServiceImpl implements NFService {
     @Override
     public List<TbNF> buscarNFsProcessadas() {
         return nfDAO.findByStatus(StatusNF.NF_PROCESSADA.getCodigoStatus());
+    }
+
+    public String getDirPendentes() {
+        return parametroSistemaDAO.findByDescricaoParametro(Parametros.DIRETORIO_NFS_PENDENTES.getDescricaoParametro());
+    }
+
+    public String getDirProcessadas() {
+        return parametroSistemaDAO.findByDescricaoParametro(Parametros.DIRETORIO_NFS_PROCESSADA.getDescricaoParametro());
     }
 }
