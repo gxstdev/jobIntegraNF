@@ -2,6 +2,7 @@ package org.jobIntegraNf.dao;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import org.jobIntegraNf.exception.ErroAcessoDadosException;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class GenericDAO<T> {
         } catch (Exception e) {
             if (tx.isActive()) tx.rollback();
             e.printStackTrace();
+            throw new ErroAcessoDadosException("Erro ao salvar lista de Entidades." + e.getMessage());
         }
     }
 
@@ -44,6 +46,7 @@ public class GenericDAO<T> {
         } catch (Exception e) {
             if (tx.isActive()) tx.rollback();
             e.printStackTrace();
+            throw new ErroAcessoDadosException("Erro ao fazer o update da Entidade." + e.getMessage());
         }
     }
 
@@ -56,6 +59,7 @@ public class GenericDAO<T> {
         } catch (Exception e) {
             if (tx.isActive()) tx.rollback();
             e.printStackTrace();
+            throw new ErroAcessoDadosException("Erro ao remover a Entidade." + e.getMessage());
         }
     }
 
