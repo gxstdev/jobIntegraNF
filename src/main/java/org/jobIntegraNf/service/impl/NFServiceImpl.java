@@ -21,11 +21,12 @@ public class NFServiceImpl implements NFService {
     @Override
     public void salvarNFs(List<TbNF> nfs) {
         if (nfs.isEmpty()) return;
+        String dir = getDirPendentes();
 
         for (TbNF nf : nfs){
             nfDAO.salvar(nf);
+            FileUtils.gerarNFTxt(nf, dir);
             nfDAO.getEm().clear();
-            FileUtils.gerarNFTxt(nf, getDirPendentes());
         }
     }
 

@@ -1,6 +1,7 @@
 package org.jobIntegraNf.model;
 
 import jakarta.persistence.*;
+import org.jobIntegraNf.enums.StatusNF;
 
 import java.time.OffsetDateTime;
 
@@ -65,11 +66,8 @@ public class TbNF {
 
     @Override
     public String toString() {
-        return  "TbNF |" +
-                "codigoNF |" + getCodigoNF() +
-                "codigoStatus |" + getCodigoStatus() +
-                "dataEmissao |" + getDataEmissao() +
-                "dataProcessamento |" + getDataProcessamento();
+        return String.format("NF\nCódigo Identificação: %d\nStatus: %d\nData Emissão: %s",
+                getCodigoNF(), getCodigoStatus(), getDataEmissao());
     }
 }
 

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NFUtil {
-    public List<TbNF> buildNFsList(){
+    public static List<TbNF> buildNFsList(){
         List<TbNF> nfs = new ArrayList<>();
         for (int i = 1; i <= 15; i++) {
             TbNF nf = new TbNF(1L, OffsetDateTime.now(), null);
