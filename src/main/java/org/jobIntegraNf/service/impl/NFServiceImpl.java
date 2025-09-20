@@ -15,17 +15,13 @@ import java.util.List;
 public class NFServiceImpl implements NFService {
 
     private final NFDAO nfDAO = new NFDAO(TbNF.class, JPAUtil.getEntityManager());
-    private final ParametroSistemaDAO parametroSistemaDAO = new ParametroSistemaDAO(TbParametroSistema.class,
-            JPAUtil.getEntityManager());
 
     @Override
     public void salvarNFs(List<TbNF> nfs) {
         if (nfs.isEmpty()) return;
-        String dir = getDirPendentes();
-
         for (TbNF nf : nfs){
             nfDAO.salvar(nf);
-            FileUtils.gerarNFTxt(nf, dir);
+            FileUtils.gerarNFTxt(nf);
             nfDAO.getEm().clear();
         }
     }
@@ -40,11 +36,7 @@ public class NFServiceImpl implements NFService {
         return nfDAO.findByStatus(StatusNF.NF_PROCESSADA.getCodigoStatus());
     }
 
-    public String getDirPendentes() {
-        return parametroSistemaDAO.findByDescricaoParametro(Parametros.DIRETORIO_NFS_PENDENTES.getDescricaoParametro());
-    }
-
-    public String getDirProcessadas() {
-        return parametroSistemaDAO.findByDescricaoParametro(Parametros.DIRETORIO_NFS_PROCESSADA.getDescricaoParametro());
+    public void atualizarStatusNF(Long codigoStatus, Long cdNF) {
+        nfDAO.updateStatusNF(codigoStatus, cdNF);
     }
 }
