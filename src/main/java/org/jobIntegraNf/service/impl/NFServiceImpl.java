@@ -1,11 +1,8 @@
 package org.jobIntegraNf.service.impl;
 
 import org.jobIntegraNf.dao.NFDAO;
-import org.jobIntegraNf.dao.ParametroSistemaDAO;
-import org.jobIntegraNf.enums.Parametros;
 import org.jobIntegraNf.enums.StatusNF;
 import org.jobIntegraNf.model.TbNF;
-import org.jobIntegraNf.model.TbParametroSistema;
 import org.jobIntegraNf.service.NFService;
 import org.jobIntegraNf.util.FileUtils;
 import org.jobIntegraNf.util.JPAUtil;
@@ -36,7 +33,7 @@ public class NFServiceImpl implements NFService {
         return nfDAO.findByStatus(StatusNF.NF_PROCESSADA.getCodigoStatus());
     }
 
-    public void atualizarStatusNF(Long codigoStatus, Long cdNF) {
-        nfDAO.updateStatusNF(codigoStatus, cdNF);
+    public boolean atualizarStatusNF(Long codigoStatus, String cdNfs) {
+       return nfDAO.updateStatusNF(codigoStatus, cdNfs);
     }
 }

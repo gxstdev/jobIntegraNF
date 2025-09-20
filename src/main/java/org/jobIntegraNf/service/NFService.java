@@ -8,5 +8,5 @@ public interface NFService {
     void salvarNFs(List<TbNF> nfs);
     List<TbNF> buscarNFsPendentes();
     List<TbNF> buscarNFsProcessadas();
-    public void atualizarStatusNF(Long codigoStatus, Long cdNF);
+    public boolean atualizarStatusNF(Long codigoStatus, String cdNfs);
 }
