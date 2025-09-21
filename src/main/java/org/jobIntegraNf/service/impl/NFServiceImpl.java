@@ -2,24 +2,27 @@ package org.jobIntegraNf.service.impl;
 
 import org.jobIntegraNf.dao.NFDAO;
 import org.jobIntegraNf.enums.StatusNF;
+import org.jobIntegraNf.exception.ErroAcessoDadosException;
 import org.jobIntegraNf.model.TbNF;
 import org.jobIntegraNf.service.NFService;
 import org.jobIntegraNf.util.FileUtils;
-import org.jobIntegraNf.util.JPAUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.List;
 
 public class NFServiceImpl implements NFService {
+    private static final Logger log = LoggerFactory.getLogger(NFServiceImpl.class);
 
-    private final NFDAO nfDAO = new NFDAO(TbNF.class, JPAUtil.getEntityManager());
+    private final NFDAO nfDAO = new NFDAO(TbNF.class);
 
     @Override
     public void salvarNFs(List<TbNF> nfs) {
         if (nfs.isEmpty()) return;
-        for (TbNF nf : nfs){
+        for (TbNF nf : nfs) {
             nfDAO.salvar(nf);
             FileUtils.gerarNFTxt(nf);
-            nfDAO.getEm().clear();
         }
     }
 
@@ -33,7 +36,19 @@ public class NFServiceImpl implements NFService {
         return nfDAO.findByStatus(StatusNF.NF_PROCESSADA.getCodigoStatus());
     }
 
-    public boolean atualizarStatusNF(Long codigoStatus, List<Long> cdNfs) {
-       return nfDAO.updateStatusNF(codigoStatus, cdNfs);
+    public boolean atualizarStatusNF(Long codigoStatus, List<Long> cdNfs) throws ErroAcessoDadosException {
+        return nfDAO.updateStatusNF(codigoStatus, cdNfs);
+    }
+
+    public boolean processarNFs(List<File> arquivosParaProcessar) {
+        try {
+            List<Long> listCdsNFs = FileUtils.extrairCodigosNFs(arquivosParaProcessar);
+            log.info("Processando {} arquivos. Atualizando status das NFs: {}", arquivosParaProcessar.size(), listCdsNFs);
+            return atualizarStatusNF(StatusNF.NF_PROCESSADA.getCodigoStatus(), listCdsNFs);
+        } catch (Exception e){
+            log.warn("Não foi possível processar os arquivos");
+            e.printStackTrace();
+        }
+      return false;
     }
 }
