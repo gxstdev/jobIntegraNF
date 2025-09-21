@@ -2,6 +2,7 @@ package org.jobIntegraNf.dao;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Query;
 import org.jobIntegraNf.exception.ErroAcessoDadosException;
 import org.jobIntegraNf.model.TbNF;
 
@@ -26,19 +27,23 @@ public class NFDAO extends GenericDAO<TbNF> {
         }
     }
 
-    public boolean updateStatusNF(Long codigoStatus, String cdNFs){
-        EntityTransaction tx =  this.em.getTransaction();
+    public boolean updateStatusNF(Long codigoStatus, List<Long> cdNFs) {
+        if (cdNFs == null || cdNFs.isEmpty()) return false;
+        EntityTransaction tx = this.em.getTransaction();
         try {
             tx.begin();
-            String sql = "UPDATE TB_NF NF SET NF.CD_STATUS = ?1 WHERE NF.CD_NF IN (?2)";
-            this.em.createNativeQuery(sql).setParameter(1, codigoStatus).setParameter(2, cdNFs).executeUpdate();
+            Query query = this.em.createQuery(
+                    "UPDATE TbNF nf SET nf.codigoStatus = :status WHERE nf.codigoNF IN :cdNf"
+            );
+            query.setParameter("status", codigoStatus).setParameter("cdNf", cdNFs).executeUpdate();
             tx.commit();
+            this.em.clear();
+            return true;
         } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
-            e.printStackTrace();
+            if (tx != null && tx.isActive()) tx.rollback();
             throw new ErroAcessoDadosException("Erro ao atualizar status da NF. Caused By: " + e.getMessage());
+        } finally {
+            this.em.close();
         }
-        return true;
     }
-
 }

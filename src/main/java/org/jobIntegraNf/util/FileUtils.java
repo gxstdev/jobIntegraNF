@@ -15,6 +15,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,7 +63,8 @@ public class FileUtils {
 
     public static void moverArquivos(List<File> arquivos, String destino) throws Exception{
         for (File arquivo : arquivos){
-           Files.move(Path.of(arquivo.getPath()), Path.of(destino), StandardCopyOption.REPLACE_EXISTING);
+           //para mover, precisa sempre ter o caminho + nome do arquivo
+           Files.move(arquivo.toPath(), Path.of(destino + arquivo.getName()), StandardCopyOption.REPLACE_EXISTING);
            log.info("Movendo arquivo: {} - para: {}", arquivo.getName(), destino);
         }
     }

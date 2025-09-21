@@ -33,7 +33,7 @@ public class NFServiceImpl implements NFService {
         return nfDAO.findByStatus(StatusNF.NF_PROCESSADA.getCodigoStatus());
     }
 
-    public boolean atualizarStatusNF(Long codigoStatus, String cdNfs) {
+    public boolean atualizarStatusNF(Long codigoStatus, List<Long> cdNfs) {
        return nfDAO.updateStatusNF(codigoStatus, cdNfs);
     }
 }
