@@ -62,12 +62,12 @@ public class FileUtils {
         try {
             for (File arquivo : arquivos) {
                 //para mover, precisa sempre ter o caminho + nome do arquivo
-                Files.move(arquivo.toPath(), Path.of(destino + arquivo.getName()), StandardCopyOption.REPLACE_EXISTING);
+                Files.move(arquivo.toPath(), Path.of(destino).resolve(arquivo.getName()), StandardCopyOption.REPLACE_EXISTING);
                 log.info("Movendo arquivo: {} - para: {}", arquivo.getName(), destino);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            throw new FileException("Não foi possível mover arquivos para o diretório: "+destino);
+            throw new FileException("Não foi possível mover arquivos para o diretório: " + destino);
         }
     }
 
@@ -78,13 +78,27 @@ public class FileUtils {
                 .collect(Collectors.toList());
     }
 
-    private static List<File> validarNomeArquivos(List<File> arquivosParaProcessar){
-        List<File> arquivosValidos =  arquivosParaProcessar.stream().filter(arquivo ->
-            arquivo.getName().split("_").length == 2).collect(Collectors.toList());
+    private static List<File> validarNomeArquivos(List<File> arquivosParaProcessar) {
+        List<File> arquivosInvalidos = new ArrayList<>();
 
-        List<File> arquivosInvalidos =  arquivosParaProcessar.stream().filter(arquivo ->
-               arquivo.getName().split("_").length != 2).collect(Collectors.toList());
-        if (!arquivosInvalidos.isEmpty()){
+        List<File> arquivosValidos = arquivosParaProcessar.stream().filter(arquivo -> {
+                    String[] splNomeArquivo = arquivo.getName().split("_");
+                    if (splNomeArquivo.length >= 2) {
+                        String cdNF = splNomeArquivo[1].replace(".txt", "");
+                        try {
+                            Long.parseLong(cdNF);
+                            return true;
+                        } catch (NumberFormatException e) {
+                            arquivosInvalidos.add(arquivo);
+                            return false;
+                        }
+                    }
+                    arquivosInvalidos.add(arquivo);
+                    return false;
+                }
+        ).collect(Collectors.toList());
+
+        if (!arquivosInvalidos.isEmpty()) {
             log.warn("Os arquivos {} possuem nomes inválidos, não podem ser processados", arquivosInvalidos);
         }
         return arquivosValidos;
@@ -94,7 +108,7 @@ public class FileUtils {
      * Gera um batch de até {@code tamanhoBatch} arquivos da lista fornecida.
      * Os arquivos retornados são removidos da lista original.
      *
-     * @param arquivos Lista original de arquivos (será modificada).
+     * @param arquivos     Lista original de arquivos (será modificada).
      * @param tamanhoBatch Número máximo de arquivos no batch.
      * @return Uma nova lista contendo até {@code tamanhoBatch} arquivos.
      */
@@ -104,7 +118,7 @@ public class FileUtils {
             List<File> batch = new ArrayList<>(arquivos.subList(0, limite));
             arquivos.subList(0, limite).clear();
             return batch;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw new FileException("Não foi possível gerar batch de arquivos" + e);
         }
