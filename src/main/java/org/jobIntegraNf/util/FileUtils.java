@@ -78,7 +78,7 @@ public class FileUtils {
                 .collect(Collectors.toList());
     }
 
-    private static List<File> validarNomeArquivos(List<File> arquivosParaProcessar) {
+    public static List<File> validarNomeArquivos(List<File> arquivosParaProcessar) {
         List<File> arquivosInvalidos = new ArrayList<>();
 
         List<File> arquivosValidos = arquivosParaProcessar.stream().filter(arquivo -> {

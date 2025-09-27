@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,4 +50,20 @@ public class FileUtilsTest {
         assertTrue(Files.exists(destDir.resolve("nf_1001.txt")));
     }
 
+    @Test
+    void testValidarNomeArquivos(){
+        File f1 = new File("nf__1001.txt");
+        File f2 = new File("nf_invalido.txt");
+        File f3 = new File("nf_4560.txt");
+
+        List<File> arquivos = List.of(f1, f2, f3);
+
+        List<File> arquivosValidos = FileUtils.validarNomeArquivos(arquivos);
+        assertEquals(1, arquivosValidos.size());
+
+        arquivos = new ArrayList<>();
+        arquivosValidos = FileUtils.validarNomeArquivos(arquivos);
+
+        assertEquals(0, arquivosValidos.size());
+    }
 }
