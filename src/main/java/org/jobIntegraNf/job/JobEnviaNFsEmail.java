@@ -2,9 +2,11 @@ package org.jobIntegraNf.job;
 
 import org.jobIntegraNf.dao.ParametroSistemaDAO;
 import org.jobIntegraNf.dto.EmailMessage;
+import org.jobIntegraNf.exception.ExecutaJobException;
 import org.jobIntegraNf.model.TbParametroSistema;
 import org.jobIntegraNf.service.EmailService;
 import org.jobIntegraNf.service.impl.GmailEmailServiceImpl;
+import org.jobIntegraNf.util.EmailUtils;
 import org.jobIntegraNf.util.FileUtils;
 
 import java.io.File;
@@ -12,22 +14,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JobEnviaNFsEmail {
-    private static final ParametroSistemaDAO parametroSistemaDAO = new ParametroSistemaDAO(TbParametroSistema.class);
+    private static final EmailService emailService = new GmailEmailServiceImpl();
 
     public static void executar() {
         try {
             List<File> arquivos = FileUtils.getNFsTxtProcessadas();
 
-            EmailService emailService = new GmailEmailServiceImpl("smtp.gmail.com",587,
-                    "gxstdev@gmail.com", "qfwb juff qvmy kmwf", true);
+            while (!arquivos.isEmpty()) {
+                List<File> arquivosParaEnviar = FileUtils.gerarBatchArquivos(arquivos, 50);
 
-            EmailMessage msg = new EmailMessage("gxstdev@gmail.com", List.of("gabrielaxavierst@gmail.com"),
-                    "TESTE", "teste", new ArrayList<>());
+                boolean isEmailEnviado = emailService.sendEmail(EmailUtils.gerarEmail(arquivosParaEnviar));
 
-            emailService.sendEmail(msg);
+                if (isEmailEnviado) {
+                    FileUtils.moverArquivos(arquivosParaEnviar, FileUtils.DIRETORIO_NFS_EXPURGADAS);
+                }
+            }
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+           e.printStackTrace();
+            throw new ExecutaJobException("Não foi possível executar JobEnviaNFsEmail. Caused By: " + e);
         }
     }
 }

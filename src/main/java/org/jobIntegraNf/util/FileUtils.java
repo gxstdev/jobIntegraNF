@@ -28,6 +28,8 @@ public class FileUtils {
 
     public static final String DIRETORIO_NF_PROCESSADAS = getDirProcessadas();
 
+    public static final String DIRETORIO_NFS_EXPURGADAS = getDirExpurgadas();
+
     private static final Logger log = LoggerFactory.getLogger(FileUtils.class);
 
 
@@ -51,6 +53,10 @@ public class FileUtils {
 
     public static String getDirProcessadas() {
         return parametroSistemaDAO.findByDescricaoParametro(Parametros.DIRETORIO_NFS_PROCESSADA.getDescricaoParametro());
+    }
+
+    public static String getDirExpurgadas() {
+        return parametroSistemaDAO.findByDescricaoParametro(Parametros.DIRETORIO_NFS_EXPURGADAS.getDescricaoParametro());
     }
 
     public static List<File> getNFsTxtPendentes() {
