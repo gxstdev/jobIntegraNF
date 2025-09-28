@@ -58,6 +58,11 @@ public class FileUtils {
         return ((files != null && files.length > 0) ? new ArrayList<>(Arrays.asList(files)) : new ArrayList<>());
     }
 
+    public static List<File> getNFsTxtProcessadas() {
+        File[] files = new File(DIRETORIO_NF_PROCESSADAS).listFiles(File::isFile);
+        return ((files != null && files.length > 0) ? new ArrayList<>(Arrays.asList(files)) : new ArrayList<>());
+    }
+
     public static void moverArquivos(List<File> arquivos, String destino) {
         try {
             for (File arquivo : arquivos) {
