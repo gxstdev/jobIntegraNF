@@ -69,6 +69,10 @@ public class FileUtils {
         return ((files != null && files.length > 0) ? new ArrayList<>(Arrays.asList(files)) : new ArrayList<>());
     }
 
+    public static List<File> getNFsTxtExpurgadas() {
+        File[] files = new File(DIRETORIO_NFS_EXPURGADAS).listFiles(File::isFile);
+        return ((files != null && files.length > 0) ? new ArrayList<>(Arrays.asList(files)) : new ArrayList<>());
+    }
     public static void moverArquivos(List<File> arquivos, String destino) {
         try {
             for (File arquivo : arquivos) {
@@ -126,6 +130,7 @@ public class FileUtils {
     public static List<File> gerarBatchArquivos(List<File> arquivos, int tamanhoBatch) {
         try {
             int limite = Math.min(arquivos.size(), tamanhoBatch);
+
             List<File> batch = new ArrayList<>(arquivos.subList(0, limite));
             arquivos.subList(0, limite).clear();
             return batch;
@@ -133,5 +138,18 @@ public class FileUtils {
             e.printStackTrace();
             throw new FileException("Não foi possível gerar batch de arquivos" + e);
         }
+    }
+
+    public static void expurgarArquivos(List<File> arquivos){
+        if (arquivos.isEmpty()) return;
+        try {
+            for (File arq : arquivos){
+                arq.delete();
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            throw new FileException("Não foi possível deletar arquivos" + e);
+        }
+
     }
 }

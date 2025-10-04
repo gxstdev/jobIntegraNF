@@ -13,7 +13,7 @@ public class ExecutaJob {
 
         String[] opt = new String[]{"PROCESSA", "EMAIL", "EXPURGO"};
 
-        String job = opt[1];
+        String job = opt[2];
 
         switch (job) {
             case "PROCESSA":
@@ -25,6 +25,11 @@ public class ExecutaJob {
                 log.info("Executando - JOB ENVIA NFs E-MAIL - {}", OffsetDateTime.now());
                 JobEnviaNFsEmail.executar();
                 log.info("Finalizando - JOB ENVIA NFs E-MAIL  - {}", OffsetDateTime.now());
+                break;
+            case "EXPURGO":
+                log.info("Executando - JOB EXPURGO NFs - {}", OffsetDateTime.now());
+                JobExpurgo.executar();
+                log.info("Finalizando - JOB EXPURGO NFs  - {}", OffsetDateTime.now());
                 break;
         }
 
