@@ -8,7 +8,6 @@ import org.jobIntegraNf.service.EmailService;
 import org.jobIntegraNf.util.EmailUtils;
 
 import java.io.File;
-import java.util.List;
 import java.util.Properties;
 
 public class GmailEmailServiceImpl implements EmailService {

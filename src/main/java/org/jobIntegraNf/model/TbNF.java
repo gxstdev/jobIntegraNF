@@ -1,8 +1,6 @@
 package org.jobIntegraNf.model;
 
 import jakarta.persistence.*;
-import org.jobIntegraNf.enums.StatusNF;
-
 import java.time.OffsetDateTime;
 
 @Entity
