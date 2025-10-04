@@ -15,6 +15,7 @@ public class NFDAO extends GenericDAO<TbNF> {
         super(clazz);
     }
 
+    @SuppressWarnings("unchecked")
     public List<TbNF> findByStatus(Long codigoStatus) {
         try(EntityManager em = JPAUtil.getEntityManager()) {
             String sql = "SELECT * FROM TB_NF NF WHERE NF.CD_STATUS = ?1";

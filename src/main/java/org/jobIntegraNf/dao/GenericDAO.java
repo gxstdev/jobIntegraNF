@@ -37,6 +37,7 @@ public class GenericDAO<T> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public List<T> buscarTodos() {
         try (EntityManager em = JPAUtil.getEntityManager()) {
             String sql = "SELECT * FROM TB_NF";
