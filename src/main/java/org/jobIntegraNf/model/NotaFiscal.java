@@ -3,9 +3,9 @@ package org.jobIntegraNf.model;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 
-@Entity
+@Entity(name = "TbNF")
 @Table(name = "TB_NF")
-public class TbNF {
+public class NotaFiscal {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ger_seq_nf")
     @SequenceGenerator(name = "ger_seq_nf", sequenceName = "seq_cd_nf", allocationSize = 1)
@@ -21,10 +21,10 @@ public class TbNF {
     @Column(name = "DT_PROCESSAMENTO")
     private OffsetDateTime dataProcessamento;
 
-    public TbNF() {
+    public NotaFiscal() {
     }
 
-    public TbNF(Long codigoStatus, OffsetDateTime dataEmissao, OffsetDateTime dataProcessamento) {
+    public NotaFiscal(Long codigoStatus, OffsetDateTime dataEmissao, OffsetDateTime dataProcessamento) {
         this.codigoStatus = codigoStatus;
         this.dataEmissao = dataEmissao;
         this.dataProcessamento = dataProcessamento;

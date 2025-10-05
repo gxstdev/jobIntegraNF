@@ -2,9 +2,9 @@ package org.jobIntegraNf.model;
 
 import jakarta.persistence.*;
 
-@Entity
+@Entity(name = "TbParametroSistema")
 @Table(name = "TB_PARAMETRO_SISTEMA")
-public class TbParametroSistema {
+public class ParametroSistema {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ger_seq_param")
     @SequenceGenerator(name = "ger_seq_param", sequenceName = "seq_cd_parametro_sistema", allocationSize = 1)
@@ -17,10 +17,10 @@ public class TbParametroSistema {
     @Column(name = "DS_PARAMETRO")
     private String descricaoParametro;
 
-    public TbParametroSistema() {
+    public ParametroSistema() {
     }
 
-    public TbParametroSistema(String taxaParametro, String descricaoParametro) {
+    public ParametroSistema(String taxaParametro, String descricaoParametro) {
         this.taxaParametro = taxaParametro;
         this.descricaoParametro = descricaoParametro;
     }
