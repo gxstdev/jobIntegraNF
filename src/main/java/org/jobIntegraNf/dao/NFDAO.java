@@ -4,22 +4,22 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Query;
 import org.jobIntegraNf.exception.ErroAcessoDadosException;
-import org.jobIntegraNf.model.TbNF;
+import org.jobIntegraNf.model.NotaFiscal;
 
 import org.jobIntegraNf.util.JPAUtil;
 
 import java.util.List;
 
-public class NFDAO extends GenericDAO<TbNF> {
-    public NFDAO(Class<TbNF> clazz) {
+public class NFDAO extends GenericDAO<NotaFiscal> {
+    public NFDAO(Class<NotaFiscal> clazz) {
         super(clazz);
     }
 
     @SuppressWarnings("unchecked")
-    public List<TbNF> findByStatus(Long codigoStatus) {
+    public List<NotaFiscal> findByStatus(Long codigoStatus) {
         try(EntityManager em = JPAUtil.getEntityManager()) {
             String sql = "SELECT * FROM TB_NF NF WHERE NF.CD_STATUS = ?1";
-            return em.createNativeQuery(sql, TbNF.class).setParameter(1, codigoStatus).getResultList();
+            return em.createNativeQuery(sql, NotaFiscal.class).setParameter(1, codigoStatus).getResultList();
         } catch (Exception e) {
             throw new ErroAcessoDadosException("Erro ao buscar entidades por status. Caused By: " + e.getMessage());
         }

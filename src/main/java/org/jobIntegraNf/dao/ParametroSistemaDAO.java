@@ -2,11 +2,11 @@ package org.jobIntegraNf.dao;
 
 import jakarta.persistence.EntityManager;
 import org.jobIntegraNf.exception.ErroAcessoDadosException;
-import org.jobIntegraNf.model.TbParametroSistema;
+import org.jobIntegraNf.model.ParametroSistema;
 import org.jobIntegraNf.util.JPAUtil;
 
-public class ParametroSistemaDAO extends GenericDAO<TbParametroSistema> {
-    public ParametroSistemaDAO(Class<TbParametroSistema> clazz) {
+public class ParametroSistemaDAO extends GenericDAO<ParametroSistema> {
+    public ParametroSistemaDAO(Class<ParametroSistema> clazz) {
         super(clazz);
     }
 
