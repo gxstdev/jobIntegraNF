@@ -3,8 +3,8 @@ package org.jobIntegraNf.job;
 import org.jobIntegraNf.exception.ExecutaJobException;
 import org.jobIntegraNf.service.EmailService;
 import org.jobIntegraNf.service.impl.GmailEmailServiceImpl;
-import org.jobIntegraNf.util.EmailUtils;
-import org.jobIntegraNf.util.FileUtils;
+import org.jobIntegraNf.util.EmailUtil;
+import org.jobIntegraNf.util.FileUtil;
 
 import java.io.File;
 import java.util.List;
@@ -14,13 +14,13 @@ public class JobEnviaNFsEmail {
 
     public static void executar() {
         try {
-            List<File> arquivos = FileUtils.getNFsTxtProcessadas();
+            List<File> arquivos = FileUtil.getNFsTxtProcessadas();
             while (!arquivos.isEmpty()) {
-                List<File> arquivosParaEnviar = FileUtils.gerarBatchArquivos(arquivos, 50);
+                List<File> arquivosParaEnviar = FileUtil.gerarBatchArquivos(arquivos, 50);
 
-                boolean isEmailEnviado = emailService.sendEmail(EmailUtils.gerarEmail(arquivosParaEnviar));
+                boolean isEmailEnviado = emailService.sendEmail(EmailUtil.gerarEmail(arquivosParaEnviar));
                 if (isEmailEnviado) {
-                    FileUtils.moverArquivos(arquivosParaEnviar, FileUtils.DIRETORIO_NFS_EXPURGADAS);
+                    FileUtil.moverArquivos(arquivosParaEnviar, FileUtil.DIRETORIO_NFS_EXPURGADAS);
                 }
             }
         } catch (Exception e) {

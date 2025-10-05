@@ -42,7 +42,7 @@ public class NFServiceImpl implements NFService {
 
     public boolean processarNFs(List<File> arquivosParaProcessar) {
         try {
-            List<Long> listCdsNFs = FileUtils.extrairCodigosNFs(arquivosParaProcessar);
+            List<Long> listCdsNFs = FileUtil.extrairCodigosNFs(arquivosParaProcessar);
             log.info("Processando {} arquivos. Atualizando status das NFs: {}", arquivosParaProcessar.size(), listCdsNFs);
             return atualizarStatusNF(StatusNF.NF_PROCESSADA.getCodigoStatus(), listCdsNFs);
         } catch (Exception e){

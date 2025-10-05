@@ -3,7 +3,7 @@ package org.jobIntegraNf.job;
 import org.jobIntegraNf.exception.ExecutaJobException;
 import org.jobIntegraNf.service.NFService;
 import org.jobIntegraNf.service.impl.NFServiceImpl;
-import org.jobIntegraNf.util.FileUtils;
+import org.jobIntegraNf.util.FileUtil;
 
 import java.io.File;
 import java.util.List;
@@ -14,13 +14,13 @@ public class JobProcessaNFs {
 
     public static void executar() {
         try {
-            List<File> arquivos = FileUtils.getNFsTxtPendentes();
+            List<File> arquivos = FileUtil.getNFsTxtPendentes();
             while (!arquivos.isEmpty()) {
-                List<File> arquivosParaProcessar = FileUtils.gerarBatchArquivos(arquivos, 1000);
+                List<File> arquivosParaProcessar = FileUtil.gerarBatchArquivos(arquivos, 1000);
 
                 boolean isNFsProcessadas = nfService.processarNFs(arquivosParaProcessar);
                 if (isNFsProcessadas) {
-                    FileUtils.moverArquivos(arquivosParaProcessar, FileUtils.DIRETORIO_NF_PROCESSADAS);
+                    FileUtil.moverArquivos(arquivosParaProcessar, FileUtil.DIRETORIO_NF_PROCESSADAS);
                 }
             }
         } catch (Exception e) {

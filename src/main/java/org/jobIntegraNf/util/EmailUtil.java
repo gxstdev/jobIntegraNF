@@ -3,15 +3,15 @@ package org.jobIntegraNf.util;
 import org.jobIntegraNf.dao.ParametroSistemaDAO;
 import org.jobIntegraNf.dto.EmailMessage;
 import org.jobIntegraNf.enums.Parametros;
-import org.jobIntegraNf.model.TbParametroSistema;
+import org.jobIntegraNf.model.ParametroSistema;
 
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-public class EmailUtils {
-    private static final ParametroSistemaDAO parametroSistemaDAO = new ParametroSistemaDAO(TbParametroSistema.class);
+public class EmailUtil {
+    private static final ParametroSistemaDAO parametroSistemaDAO = new ParametroSistemaDAO(ParametroSistema.class);
 
     public static final String SMTP_HOST = getSmtpHost();
     public static final String SMTP_PORT = getSmtpPort();

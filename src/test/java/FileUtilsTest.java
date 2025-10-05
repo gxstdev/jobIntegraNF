@@ -1,4 +1,4 @@
-import org.jobIntegraNf.util.FileUtils;
+import org.jobIntegraNf.util.FileUtil;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -17,7 +17,7 @@ public class FileUtilsTest {
         File f2 = new File("nf_1002.txt");
         List<File> arquivos = List.of(f1, f2);
 
-        List<Long> codigos = FileUtils.extrairCodigosNFs(arquivos);
+        List<Long> codigos = FileUtil.extrairCodigosNFs(arquivos);
 
         assertEquals(2, codigos.size());
         assertTrue(codigos.contains(1001L));
@@ -29,7 +29,7 @@ public class FileUtilsTest {
         File f2 = new File("arquivo_invalido.txt");
         List<File> arquivos = List.of(f1, f2);
 
-        List<Long> codigos = FileUtils.extrairCodigosNFs(arquivos);
+        List<Long> codigos = FileUtil.extrairCodigosNFs(arquivos);
 
         // deve ignorar o inválido
         assertEquals(1, codigos.size());
@@ -44,7 +44,7 @@ public class FileUtilsTest {
         File f1 = Files.createFile(srcDir.resolve("nf_1001.txt")).toFile();
         List<File> arquivos = List.of(f1);
 
-        FileUtils.moverArquivos(arquivos, destDir.toString());
+        FileUtil.moverArquivos(arquivos, destDir.toString());
 
         assertFalse(f1.exists());
         assertTrue(Files.exists(destDir.resolve("nf_1001.txt")));
@@ -58,11 +58,11 @@ public class FileUtilsTest {
 
         List<File> arquivos = List.of(f1, f2, f3);
 
-        List<File> arquivosValidos = FileUtils.validarNomeArquivos(arquivos);
+        List<File> arquivosValidos = FileUtil.validarNomeArquivos(arquivos);
         assertEquals(1, arquivosValidos.size());
 
         arquivos = new ArrayList<>();
-        arquivosValidos = FileUtils.validarNomeArquivos(arquivos);
+        arquivosValidos = FileUtil.validarNomeArquivos(arquivos);
 
         assertEquals(0, arquivosValidos.size());
     }

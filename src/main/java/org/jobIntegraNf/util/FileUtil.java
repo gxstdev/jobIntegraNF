@@ -3,8 +3,8 @@ package org.jobIntegraNf.util;
 import org.jobIntegraNf.dao.ParametroSistemaDAO;
 import org.jobIntegraNf.enums.Parametros;
 import org.jobIntegraNf.exception.FileException;
-import org.jobIntegraNf.model.TbNF;
-import org.jobIntegraNf.model.TbParametroSistema;
+import org.jobIntegraNf.model.NotaFiscal;
+import org.jobIntegraNf.model.ParametroSistema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class FileUtils {
-    private static final ParametroSistemaDAO parametroSistemaDAO = new ParametroSistemaDAO(TbParametroSistema.class);
+public class FileUtil {
+    private static final ParametroSistemaDAO parametroSistemaDAO = new ParametroSistemaDAO(ParametroSistema.class);
 
     public static final String DIRETORIO_NF_PENDENTES = getDirPendentes();
 
@@ -30,10 +30,10 @@ public class FileUtils {
 
     public static final String DIRETORIO_NFS_EXPURGADAS = getDirExpurgadas();
 
-    private static final Logger log = LoggerFactory.getLogger(FileUtils.class);
+    private static final Logger log = LoggerFactory.getLogger(FileUtil.class);
 
 
-    public static void gerarNFTxt(TbNF nf) {
+    public static void gerarNFTxt(NotaFiscal nf) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(DIRETORIO_NF_PENDENTES + gerarNomeArquivo(nf)))) {
             bw.write(nf.toString());
         } catch (IOException e) {
@@ -43,7 +43,7 @@ public class FileUtils {
         }
     }
 
-    private static String gerarNomeArquivo(TbNF nf) {
+    private static String gerarNomeArquivo(NotaFiscal nf) {
         return String.format("nf_%d.txt", nf.getCodigoNF());
     }
 
