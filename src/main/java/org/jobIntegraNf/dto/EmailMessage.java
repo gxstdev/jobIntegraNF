@@ -4,11 +4,13 @@ import java.io.File;
 import java.util.List;
 
 public class EmailMessage {
+    private final String to;
     private final String subject;
     private final String body;
     private final List<File> attachments;
 
-    public EmailMessage(String subject, String body, List<File> attachments) {
+    public EmailMessage(String to, String subject, String body, List<File> attachments) {
+        this.to = to;
         this.subject = subject;
         this.body = body;
         this.attachments = attachments == null ? List.of() : List.copyOf(attachments);
@@ -24,6 +26,10 @@ public class EmailMessage {
 
     public List<File> getAttachments() {
         return attachments;
+    }
+
+    public String getTo() {
+        return to;
     }
 }
 
