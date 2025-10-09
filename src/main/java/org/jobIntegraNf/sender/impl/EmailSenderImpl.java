@@ -7,7 +7,6 @@ import org.jobIntegraNf.enums.Parametros;
 import org.jobIntegraNf.exception.EmailException;
 import org.jobIntegraNf.sender.EmailSender;
 import org.jobIntegraNf.service.ParametroSistemaService;
-import org.jobIntegraNf.service.impl.ParametroSistemaServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,32 +21,42 @@ import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
 
+/**
+ * Implementação de {@link org.jobIntegraNf.sender.EmailSender} baseada em
+ * Jakarta Mail (Angus) para envio de e-mails com ou sem anexos.
+ */
 public class EmailSenderImpl implements EmailSender {
     private final Logger log = LoggerFactory.getLogger(EmailSenderImpl.class);
     
-    private final ParametroSistemaService parametroSistemaService = new ParametroSistemaServiceImpl();
+    private final ParametroSistemaService parametroSistemaService;
 
-    private final String SMTP_HOST = getSmtpHost();
-    private final String SMTP_PORT = getSmtpPort();
-    private final String SMTP_USERNAME = getSmtpUsername();
-    private final String SMTP_PASSWORD = getSmtpPassword();
-    
+    private final String SMTP_HOST;
+    private final String SMTP_PORT;
+    private final String SMTP_USERNAME;
+    private final String SMTP_PASSWORD;
+
+    public EmailSenderImpl(ParametroSistemaService parametroSistemaService) {
+        this.parametroSistemaService = parametroSistemaService;
+        this.SMTP_HOST = this.getSmtpHost();
+        this.SMTP_PORT = this.getSmtpPort();
+        this.SMTP_USERNAME = this.getSmtpUsername();
+        this.SMTP_PASSWORD = this.getSmtpPassword();
+    }
+
     private String getSmtpHost(){
-        return parametroSistemaService.findByDescricaoParametro(Parametros.SMTP_HOST.getDescricaoParametro());
+        return this.parametroSistemaService.findByDescricaoParametro(Parametros.SMTP_HOST.getDescricaoParametro());
     }
 
     private String getSmtpPort(){
-        return parametroSistemaService.findByDescricaoParametro(Parametros.SMTP_PORT.getDescricaoParametro());
+        return this.parametroSistemaService.findByDescricaoParametro(Parametros.SMTP_PORT.getDescricaoParametro());
     }
 
     private String getSmtpUsername(){
-        return parametroSistemaService.findByDescricaoParametro(Parametros.SMTP_USERNAME.getDescricaoParametro());
+        return this.parametroSistemaService.findByDescricaoParametro(Parametros.SMTP_USERNAME.getDescricaoParametro());
     }
 
-   
-
     private String getSmtpPassword(){
-        return parametroSistemaService.findByDescricaoParametro(Parametros.SMTP_PASSWORD.getDescricaoParametro());
+        return this.parametroSistemaService.findByDescricaoParametro(Parametros.SMTP_PASSWORD.getDescricaoParametro());
     }
 
     private Session createSession() {
@@ -71,33 +80,28 @@ public class EmailSenderImpl implements EmailSender {
         return s;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean send(EmailMessage message){
         try {
-            //objeto de e-mail para ser enviado, será enviado a partir dos dados do objeto session
             MimeMessage mime = new MimeMessage(createSession());
-            //pega o e-mail do remetente e transforme em um objeto InternetAddress
             mime.setFrom(new InternetAddress(SMTP_USERNAME));
             InternetAddress[] toAddresses = InternetAddress.parse(message.getTo());
-            //define os destinatários
             mime.setRecipients(Message.RecipientType.TO, toAddresses);
-            //define o assunto do e-mail
             mime.setSubject(message.getSubject());
 
             if (message.getAttachments().isEmpty()) {
-                // corpo simples
                 mime.setText(message.getBody(), "utf-8");
             } else {
-                // multipart com anexos
+                Multipart multipart = new MimeMultipart();
                 MimeBodyPart textPart = new MimeBodyPart();
                 textPart.setText(message.getBody());
-                Multipart multipart = new MimeMultipart();
                 multipart.addBodyPart(textPart);
                 for (File file : message.getAttachments()) {
                     MimeBodyPart attachPart = new MimeBodyPart();
-                    attachPart.attachFile(file); // usa java.nio internamente
+                    attachPart.attachFile(file);
                     multipart.addBodyPart(attachPart);
-                }
+                }               
                 mime.setContent(multipart);
             }
             Transport.send(mime);
