@@ -17,26 +17,34 @@ import org.jobIntegraNf.service.ParametroSistemaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Implementação de {@link org.jobIntegraNf.service.ArquivoNFService} para
+ * manipulação de arquivos de Notas Fiscais em diretórios configurados.
+ */
 public class ArquivoNFServiceImpl implements ArquivoNFService {
-    private final Logger log = LoggerFactory.getLogger(ArquivoNFServiceImpl.class);
-    
-    private final ParametroSistemaService parametroSistemaService = new ParametroSistemaServiceImpl();
+    private final Logger log = LoggerFactory.getLogger(ArquivoNFServiceImpl.class); 
 
     private String DIRETORIO_NF_PENDENTES;
     private String DIRETORIO_NF_PROCESSADAS;
     private String DIRETORIO_NF_EXPURGADAS;
+    private String DIRETORIO_NF_EM_ENVIO;
 
+    private final ParametroSistemaService parametroSistemaService;
 
-    public ArquivoNFServiceImpl() {
+    public ArquivoNFServiceImpl(ParametroSistemaService parametroSistemaService) {
+        this.parametroSistemaService = parametroSistemaService;
         this.DIRETORIO_NF_PENDENTES = parametroSistemaService.getDirPendentes();
         this.DIRETORIO_NF_PROCESSADAS = parametroSistemaService.getDirProcessadas();
         this.DIRETORIO_NF_EXPURGADAS = parametroSistemaService.getDirExpurgadas();
+        this.DIRETORIO_NF_EM_ENVIO = parametroSistemaService.getDirEmEnvio();
     }
 
+    /** {@inheritDoc} */
     public String gerarNomeArquivo(NotaFiscal nf) {
         return String.format("nf_%d.txt", nf.getCodigoNF());
     }
 
+    /** {@inheritDoc} */
     public List<File> validarNomeArquivos(List<File> arquivosParaProcessar) {
         List<File> arquivosInvalidos = new ArrayList<>();
 

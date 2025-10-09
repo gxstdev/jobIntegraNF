@@ -15,17 +15,25 @@ import org.slf4j.LoggerFactory;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.PersistenceException;
 
+/**
+ * Implementação de {@link org.jobIntegraNf.service.NFService} que coordena
+ * persistência, atualização de status e processamento de NFs.
+ */
 public class NFServiceImpl implements NFService {
     private static final Logger log = LoggerFactory.getLogger(NFServiceImpl.class);
 
-    private final ArquivoNFService arquivoNFService = new ArquivoNFServiceImpl();
-    
+    private final ArquivoNFService arquivoNFService;
+
+    public NFServiceImpl(ArquivoNFService arquivoNFService) {
+        this.arquivoNFService = arquivoNFService;
+    }
+
+    /** {@inheritDoc} */
     @Override
     public void salvarNFs(List<NotaFiscal> nfs) {
-
         if (nfs.isEmpty()) return;
-
         EntityManager em = JPAUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();
         
