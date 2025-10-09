@@ -11,13 +11,26 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Utilitários para manipulação de arquivos utilizados pelos jobs.
+ *
+ * <p>Inclui operações de movimentação entre diretórios, geração de lotes
+ * (batches) de processamento e expurgo (remoção) de arquivos.</p>
+ */
 public class FileUtil {
     private static final Logger log = LoggerFactory.getLogger(FileUtil.class);
 
+    /**
+     * Move os arquivos informados para o diretório de destino.
+     *
+     * @param arquivos Lista de arquivos a serem movidos.
+     * @param destino  Caminho do diretório de destino.
+     * @throws FileException caso algum arquivo não possa ser movido.
+     */
     public static void moverArquivos(List<File> arquivos, String destino) {
         try {
             for (File arquivo : arquivos) {
-                //para mover, precisa sempre ter o caminho + nome do arquivo
+                //para mover, precisa sempre ter o caminho + nome do arquivo          
                 Files.move(arquivo.toPath(), Path.of(destino).resolve(arquivo.getName()), StandardCopyOption.REPLACE_EXISTING);
                 log.info("Movendo arquivo: {} - para: {}", arquivo.getName(), destino);
             }
@@ -38,7 +51,6 @@ public class FileUtil {
     public static List<File> gerarBatchArquivos(List<File> arquivos, int tamanhoBatch) {
         try {
             int limite = Math.min(arquivos.size(), tamanhoBatch);
-
             List<File> batch = new ArrayList<>(arquivos.subList(0, limite));
             arquivos.subList(0, limite).clear();
             return batch;
@@ -48,6 +60,12 @@ public class FileUtil {
         }
     }
 
+    /**
+     * Remove definitivamente os arquivos informados do sistema de arquivos.
+     *
+     * @param arquivos Lista de arquivos a serem deletados.
+     * @throws FileException caso algum arquivo não possa ser deletado.
+     */
     public static void expurgarArquivos(List<File> arquivos){
         if (arquivos.isEmpty()) return;
         try {
