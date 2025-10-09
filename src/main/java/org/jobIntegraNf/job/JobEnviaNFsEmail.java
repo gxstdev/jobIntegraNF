@@ -3,42 +3,45 @@ package org.jobIntegraNf.job;
 import java.io.File;
 import java.util.List;
 
-import org.jobIntegraNf.exception.ExecutaJobException;
 import org.jobIntegraNf.service.ArquivoNFService;
 import org.jobIntegraNf.service.EmailService;
 import org.jobIntegraNf.service.ParametroSistemaService;
 import org.jobIntegraNf.util.FileUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class JobEnviaNFsEmail {
-    private final Logger log = LoggerFactory.getLogger(JobEnviaNFsEmail.class);
-    
+/**
+ * Job responsável por enviar por e-mail os arquivos de NFs processadas e,
+ * após sucesso, movê-los para o diretório de expurgo.
+ */
+public class JobEnviaNFsEmail extends AbstractJobArquivos {
+
     private final ParametroSistemaService parametroSistemaService;
-
     private final EmailService emailService;
-    private final ArquivoNFService arquivoNFService ;
+    private final ArquivoNFService arquivoNFService;
 
-    public JobEnviaNFsEmail(EmailService emailService, ArquivoNFService arquivoNFService, ParametroSistemaService parametroSistemaService) {
+    public JobEnviaNFsEmail(EmailService emailService, ArquivoNFService arquivoNFService,
+        ParametroSistemaService parametroSistemaService) {
         this.emailService = emailService;
         this.arquivoNFService = arquivoNFService;
         this.parametroSistemaService = parametroSistemaService;
     }
 
-    public void executar() {
-        try {
-            List<File> arquivos = arquivoNFService.getNFsTxtProcessadas();
-            while (!arquivos.isEmpty()) {
-                List<File> arquivosParaEnviar = FileUtil.gerarBatchArquivos(arquivos, 50);
+    @Override
+    protected List<File> obterArquivos() {
+        return this.arquivoNFService.getNFsTxtProcessadas();
+    }
 
-                boolean isEmailEnviado = emailService.enviarNFsProcessadas(arquivosParaEnviar);
-                if (isEmailEnviado) {
-                    FileUtil.moverArquivos(arquivosParaEnviar, parametroSistemaService.getDirExpurgadas());
-                }
-            }
-        } catch (Exception e) {
-            log.error("Erro ao executar JobEnviaNFsEmail", e);
-            throw new ExecutaJobException("Não foi possível executar JobEnviaNFsEmail", e);
-        }
+    @Override
+    protected int tamanhoBatch() {
+        return this.parametroSistemaService.getBatchEmail();
+    }
+
+    @Override
+    protected boolean processarBatch(List<File> arquivosBatch) {
+        return this.emailService.enviarNFsProcessadas(arquivosBatch);
+    }
+
+    @Override
+    protected void aposSucesso(List<File> arquivosBatch) {
+        FileUtil.moverArquivos(arquivosBatch, this.parametroSistemaService.getDirExpurgadas());
     }
 }

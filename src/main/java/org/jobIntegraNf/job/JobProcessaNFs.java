@@ -3,16 +3,15 @@ package org.jobIntegraNf.job;
 import java.io.File;
 import java.util.List;
 
-import org.jobIntegraNf.exception.ExecutaJobException;
 import org.jobIntegraNf.service.ArquivoNFService;
 import org.jobIntegraNf.service.NFService;
 import org.jobIntegraNf.service.ParametroSistemaService;
 import org.jobIntegraNf.util.FileUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class JobProcessaNFs {
-    private final Logger log = LoggerFactory.getLogger(JobProcessaNFs.class);
+/**
+ * Job responsável por processar arquivos de NFs pendentes e atualizar seu status.
+ */
+public class JobProcessaNFs extends AbstractJobArquivos {
     
     private final NFService nfService;
     private final ArquivoNFService arquivoNFService;
@@ -24,20 +23,23 @@ public class JobProcessaNFs {
         this.parametroSistemaService = parametroSistemaService;
     }
 
-    public void executar() {
-        try {
-            List<File> arquivos = this.arquivoNFService.getNFsTxtPendentes();
-            while (!arquivos.isEmpty()) {
-                List<File> arquivosParaProcessar = FileUtil.gerarBatchArquivos(arquivos, 1000);
+    @Override
+    protected List<File> obterArquivos() {
+        return this.arquivoNFService.getNFsTxtPendentes();
+    }
 
-                boolean isNFsProcessadas = this.nfService.processarNFs(arquivosParaProcessar);
-                if (isNFsProcessadas) {
-                    FileUtil.moverArquivos(arquivosParaProcessar, this.parametroSistemaService.getDirProcessadas());
-                }
-            }
-        } catch (Exception e) {
-            log.error("Erro ao executar JobProcessaNFs", e);
-            throw new ExecutaJobException("Não foi possível executar JobProcessaNFs", e);
-        }
+    @Override
+    protected int tamanhoBatch() {
+        return this.parametroSistemaService.getBatchProcessa();
+    }
+
+    @Override
+    protected boolean processarBatch(List<File> arquivosBatch) {
+        return this.nfService.processarNFs(arquivosBatch);
+    }
+
+    @Override
+    protected void aposSucesso(List<File> arquivosBatch) {
+        FileUtil.moverArquivos(arquivosBatch, this.parametroSistemaService.getDirProcessadas());
     }
 }
