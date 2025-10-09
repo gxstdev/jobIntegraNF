@@ -45,61 +45,61 @@ public class NFServiceImpl implements NFService {
                 tx.commit();
                 arquivoNFService.gerarNFTxt(nf);
             }
-        } catch (Exception e) {
+        } catch (PersistenceException e) {
             if (tx.isActive()) tx.rollback();
             log.error("Erro ao salvar NFs.", e);
             throw new ErroAcessoDadosException("Erro ao salvar NFs.", e);
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<NotaFiscal> buscarNFsPendentes() {
-
         try (EntityManager em = JPAUtil.getEntityManager()) {
             NFDAO nfDAO = new NFDAO(NotaFiscal.class, em);
-            return nfDAO.findByStatus(StatusNF.NF_PENDENTE_PROCESSAMENTO.getCodigoStatus());
-        } catch (Exception e) {
+            return nfDAO.findByStatus(StatusNF.NF_PENDENTE_PROCESSAMENTO);
+        } catch (PersistenceException e) {
             log.error("Erro ao buscar NFs pendentes.", e);
             throw new ErroAcessoDadosException("Erro ao buscar NFs pendentes.", e);
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<NotaFiscal> buscarNFsProcessadas() {
-
         try (EntityManager em = JPAUtil.getEntityManager()) {
             NFDAO nfDAO = new NFDAO(NotaFiscal.class, em);
-            return nfDAO.findByStatus(StatusNF.NF_PROCESSADA.getCodigoStatus());
-        } catch (Exception e) {
+            return nfDAO.findByStatus(StatusNF.NF_PROCESSADA);
+        } catch (PersistenceException e) {
             log.error("Erro ao buscar NFs processadas.", e);
             throw new ErroAcessoDadosException("Erro ao buscar NFs processadas.", e);
         }
     }
 
-    public boolean atualizarStatusNF(Long codigoStatus, List<Long> cdNfs) throws ErroAcessoDadosException {
+    /** {@inheritDoc} */
+    public boolean atualizarStatusNF(StatusNF status, List<Long> cdNfs) throws ErroAcessoDadosException {
         boolean result = false;
-
         EntityManager em = JPAUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();
-
         try (em) {
             tx.begin();
             NFDAO nfDAO = new NFDAO(NotaFiscal.class, em);
-            result = nfDAO.updateStatusNF(codigoStatus, cdNfs);
+            result = nfDAO.updateStatusNF(status, cdNfs);
             tx.commit();
             return result;
-        } catch (Exception e) {
+        } catch (PersistenceException e) {
             if (tx.isActive()) tx.rollback();
             log.error("Erro ao atualizar status da NF.", e);
             throw new ErroAcessoDadosException("Erro ao atualizar status da NF.", e);
         }
     }
 
+    /** {@inheritDoc} */
     public boolean processarNFs(List<File> arquivosParaProcessar) {
         try {
-            List<Long> listCdsNFs = arquivoNFService.extrairCodigosNFs(arquivosParaProcessar);
-            return atualizarStatusNF(StatusNF.NF_PROCESSADA.getCodigoStatus(), listCdsNFs);
-        } catch (Exception e) {
+            List<Long> listCdsNFs = this.arquivoNFService.extrairCodigosNFs(arquivosParaProcessar);
+            return this.atualizarStatusNF(StatusNF.NF_PROCESSADA, listCdsNFs);
+        } catch (PersistenceException e) {
             log.error("Erro ao processar NFs.", e);
             throw new ErroAcessoDadosException("Erro ao processar NFs.", e);
         }
