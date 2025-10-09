@@ -70,9 +70,10 @@ public class ArquivoNFServiceImpl implements ArquivoNFService {
         return arquivosValidos;
     }
 
+    /** {@inheritDoc} */
     public void gerarNFTxt(NotaFiscal nf) {
         try (BufferedWriter bw = new BufferedWriter(
-                new FileWriter(String.valueOf(Path.of(DIRETORIO_NF_PENDENTES).resolve(gerarNomeArquivo(nf)))))) {
+                new FileWriter(String.valueOf(Path.of(DIRETORIO_NF_PENDENTES).resolve(this.gerarNomeArquivo(nf)))))) {
             bw.write(nf.toString());
         } catch (IOException e) {
             String errorMsg = String.format("Erro ao gerar arquivo TXT da NF: %d", nf.getCodigoNF());
@@ -81,25 +82,35 @@ public class ArquivoNFServiceImpl implements ArquivoNFService {
         }
     }
 
+    /** {@inheritDoc} */
     public List<Long> extrairCodigosNFs(List<File> arquivosParaProcessar) {
-        return validarNomeArquivos(arquivosParaProcessar)
+        return this.validarNomeArquivos(arquivosParaProcessar)
                 .stream()
                 .map(arq -> Long.valueOf(arq.getName().split("_")[1].replace(".txt", "")))
                 .collect(Collectors.toList());
     }
 
+    /** {@inheritDoc} */
     public List<File> getNFsTxtPendentes() {
         File[] files = new File(DIRETORIO_NF_PENDENTES).listFiles(File::isFile);
         return (files != null) ? new ArrayList<>(Arrays.asList(files)) : new ArrayList<>();
     }
 
+    /** {@inheritDoc} */
     public List<File> getNFsTxtProcessadas() {
         File[] files = new File(DIRETORIO_NF_PROCESSADAS).listFiles(File::isFile);
         return ((files != null && files.length > 0) ? new ArrayList<>(Arrays.asList(files)) : new ArrayList<>());
     }
 
+    /** {@inheritDoc} */
     public List<File> getNFsTxtExpurgadas() {
         File[] files = new File(DIRETORIO_NF_EXPURGADAS).listFiles(File::isFile);
+        return ((files != null && files.length > 0) ? new ArrayList<>(Arrays.asList(files)) : new ArrayList<>());
+    }
+
+    /** {@inheritDoc} */
+    public List<File> getNFsTxtEmEnvio() {
+        File[] files = new File(DIRETORIO_NF_EM_ENVIO).listFiles(File::isFile);
         return ((files != null && files.length > 0) ? new ArrayList<>(Arrays.asList(files)) : new ArrayList<>());
     }
 }
