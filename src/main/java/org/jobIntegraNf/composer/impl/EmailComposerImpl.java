@@ -2,36 +2,30 @@ package org.jobIntegraNf.composer.impl;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 import org.jobIntegraNf.composer.EmailComposer;
 import org.jobIntegraNf.dto.EmailMessage;
-import org.jobIntegraNf.enums.Parametros;
 import org.jobIntegraNf.service.ParametroSistemaService;
-import org.jobIntegraNf.service.impl.ParametroSistemaServiceImpl;
-
+/**
+ * Implementação de {@link org.jobIntegraNf.composer.EmailComposer} que
+ * monta mensagens de e-mail com base nos parâmetros do sistema.
+ */
 public class EmailComposerImpl implements EmailComposer {
 
-    private final ParametroSistemaService parametroSistemaService = new ParametroSistemaServiceImpl();
+    private final ParametroSistemaService parametroSistemaService;
 
-    private String getDestinatario() {
-        LocalTime agora = LocalTime.now();
-        LocalTime limite = LocalTime.of(18, 0);
-
-        if (agora.isBefore(limite)) {
-            return parametroSistemaService
-                    .findByDescricaoParametro(Parametros.EMAIL_ENVIO_DIURNO.getDescricaoParametro());
-        }
-        return parametroSistemaService.findByDescricaoParametro(Parametros.EMAIL_ENVIO_NOTURNO.getDescricaoParametro());
+    public EmailComposerImpl(ParametroSistemaService parametroSistemaService) {
+        this.parametroSistemaService = parametroSistemaService;
     }
 
     // TODO: assunto e corpo do e-mail vir de parâmetro do sistema
     // assim pode haver reutilização
 
-    public EmailMessage gerarEmail(List<File> arquivosParaEnviar) {
+    /** {@inheritDoc} */
+    public EmailMessage composeNFsProcessadas(List<File> anexos) {
         String subject = String.format("NOTAS FISCAIS - %s", LocalDateTime.now());
         String body = "Segue anexo NFs já processadas.";
-        return new EmailMessage(getDestinatario(), subject, body, arquivosParaEnviar);
+        return new EmailMessage(parametroSistemaService.getDestinatario(), subject, body, anexos);
     }
 }
