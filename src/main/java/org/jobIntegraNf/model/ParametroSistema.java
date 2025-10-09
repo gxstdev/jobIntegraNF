@@ -2,6 +2,10 @@ package org.jobIntegraNf.model;
 
 import jakarta.persistence.*;
 
+/**
+ * Entidade que representa parâmetros de configuração do sistema,
+ * armazenados em banco de dados.
+ */
 @Entity(name = "TbParametroSistema")
 @Table(name = "TB_PARAMETRO_SISTEMA")
 public class ParametroSistema {
@@ -17,34 +21,61 @@ public class ParametroSistema {
     @Column(name = "DS_PARAMETRO")
     private String descricaoParametro;
 
+    /**
+     * Construtor padrão exigido pelo JPA.
+     */
     public ParametroSistema() {
     }
 
+    /**
+     * Constrói uma instância com os valores informados.
+     *
+     * @param taxaParametro     valor do parâmetro.
+     * @param descricaoParametro descrição identificadora do parâmetro.
+     */
     public ParametroSistema(String taxaParametro, String descricaoParametro) {
         this.taxaParametro = taxaParametro;
         this.descricaoParametro = descricaoParametro;
     }
 
+    /**
+     * @return código identificador do parâmetro.
+     */
     public Long getCodigoPametroSistema() {
-        return codigoPametroSistema;
+        return this.codigoPametroSistema;
     }
 
+    /**
+     * @param codigoPametroSistema código identificador do parâmetro.
+     */
     public void setCodigoPametroSistema(Long codigoPametroSistema) {
         this.codigoPametroSistema = codigoPametroSistema;
     }
 
+    /**
+     * @return valor do parâmetro.
+     */
     public String getTaxaParametro() {
-        return taxaParametro;
+        return this.taxaParametro;
     }
 
+    /**
+     * @param taxaParametro valor do parâmetro.
+     */
     public void setTaxaParametro(String taxaParametro) {
         this.taxaParametro = taxaParametro;
     }
 
+    /**
+     * @return descrição identificadora do parâmetro.
+     */
     public String getDescricaoParametro() {
-        return descricaoParametro;
+        return this.descricaoParametro;
     }
 
+    /**
+     * @param descricaoParametro descrição identificadora do parâmetro.
+     */
     public void setDescricaoParametro(String descricaoParametro) {
         this.descricaoParametro = descricaoParametro;
     }
