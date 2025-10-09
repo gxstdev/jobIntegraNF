@@ -1,0 +1,20 @@
+<configuration>
+    <!-- Console appender -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Nível global da aplicação -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+    <!-- Hibernate: só WARN para limpar o DEBUG -->
+    <logger name="org.hibernate" level="WARN" />
+
+    <!-- SQL: DEBUG se quiser ver queries, ou TRACE para bind de parâmetros -->
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
+</configuration>
