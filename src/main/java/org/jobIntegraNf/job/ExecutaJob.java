@@ -35,7 +35,7 @@ public class ExecutaJob {
         
         String[] opt = new String[]{"PROCESSA", "EMAIL", "EXPURGO"};
 
-        String job = opt[2];
+        String job = opt[0];
 
         switch (job) {
             case "PROCESSA":

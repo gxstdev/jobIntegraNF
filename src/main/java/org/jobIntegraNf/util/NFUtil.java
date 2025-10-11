@@ -20,7 +20,7 @@ public class NFUtil {
      */
     public static List<NotaFiscal> buildNFsList(){
         List<NotaFiscal> nfs = new ArrayList<>();
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= 500; i++) {
             NotaFiscal nf = new NotaFiscal(StatusNF.NF_PENDENTE_PROCESSAMENTO, OffsetDateTime.now(), null);
             nfs.add(nf);
         }

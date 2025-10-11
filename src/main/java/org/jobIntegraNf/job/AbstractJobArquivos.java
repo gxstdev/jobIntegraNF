@@ -23,7 +23,7 @@ public abstract class AbstractJobArquivos {
      */
     public void executar() {
         try {
-            List<File> arquivos = obterArquivos();
+            List<File> arquivos = this.obterArquivos();
             while (!arquivos.isEmpty()) {
                 List<File> batch = FileUtil.gerarBatchArquivos(arquivos, this.tamanhoBatch());
                 boolean sucesso = this.processarBatch(batch);
